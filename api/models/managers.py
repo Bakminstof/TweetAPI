@@ -155,6 +155,7 @@ class TweetManager(CRUDMixin):
         self,
         async_session: AsyncSession,
         order_by: Any | None = None,
+        limit: int = None,
     ) -> Sequence[Tweet]:
         """
         Loaded fields:
@@ -174,7 +175,13 @@ class TweetManager(CRUDMixin):
             .load_only(Media.id),
         ]
 
-        stmt = select(self.table).options(*options).order_by(order_by or self.table.id)
+        stmt = (
+            select(self.table)
+            .options(*options)
+            .order_by(order_by or self.table.id)
+            .limit(limit or self.default_limit)
+        )
+
         result = await async_session.scalars(stmt)
         result = result.unique().all()
         await async_session.commit()
@@ -186,9 +193,11 @@ class TweetManager(CRUDMixin):
         async_session: AsyncSession,
         tweet_id: int,
         order_by: Any | None = None,
+        limit: int = None,
     ) -> Tweet | None:
         """
-        Loaded fields: id, author_id, author(id)
+        Loaded fields:
+        id, author_id, author(id)
         """
         options = [
             load_only(Tweet.id, Tweet.author_id),
@@ -198,12 +207,15 @@ class TweetManager(CRUDMixin):
             noload(Tweet.likers),
             noload(Tweet.attachments),
         ]
+
         stmt = (
             select(self.table)
             .where(Tweet.id == tweet_id)
             .options(*options)
             .order_by(order_by or self.table.id)
+            .limit(limit or self.default_limit)
         )
+
         result = await async_session.scalar(stmt)
         await async_session.commit()
         return result
@@ -217,6 +229,7 @@ class UserManager(CRUDMixin):
         async_session: AsyncSession,
         user_id: int,
         order_by: Any | None = None,
+        limit: int = None,
     ) -> User | None:
         """
         Loaded fields:
@@ -228,12 +241,15 @@ class UserManager(CRUDMixin):
             noload(User.token),
             noload(User.tweets_likes),
         ]
+
         stmt = (
             select(self.table)
             .where(User.id == user_id)
             .options(*options)
             .order_by(order_by or self.table.id)
+            .limit(limit or self.default_limit)
         )
+
         result = await async_session.scalar(stmt)
         await async_session.commit()
         return result
@@ -243,6 +259,7 @@ class UserManager(CRUDMixin):
         api_key: str,
         async_session: AsyncSession,
         order_by: Any | None = None,
+        limit: int = None,
     ) -> User | None:
         """
         Loaded fields:
@@ -254,12 +271,15 @@ class UserManager(CRUDMixin):
             noload(User.tweets),
             noload(User.tweets_likes),
         ]
+
         stmt = (
             select(self.table)
             .where(User.token.has(api_key=api_key))
             .options(*options)
             .order_by(order_by or self.table.id)
+            .limit(limit or self.default_limit)
         )
+
         result = await async_session.scalar(stmt)
         await async_session.commit()
         return result
@@ -281,20 +301,25 @@ class MediaManager(CRUDMixin):
         async_session: AsyncSession,
         media_ids: List[int],
         order_by: Any | None = None,
+        limit: int = None,
     ) -> Sequence[Media]:
         """
-        Loaded fields: id, file
+        Loaded fields:
+        id, file
         """
         options = [
             load_only(Media.id, Media.file),
             noload(Media.tweet_item),
         ]
+
         stmt = (
             select(self.table)
             .where(Media.id.in_(media_ids))
             .options(*options)
             .order_by(order_by or self.table.id)
+            .limit(limit or self.default_limit)
         )
+
         result = await async_session.scalars(stmt)
         await async_session.commit()
         return result.unique().all()

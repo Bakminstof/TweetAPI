@@ -6,6 +6,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 class CRUDMixin:
     table: Table | None = None
+    default_limit: int = 100
 
     @classmethod
     async def add_all(
