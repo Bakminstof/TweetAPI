@@ -11,5 +11,3 @@
 - /api/tweets/{tweet_id}: DELETE
 - /api/tweets/{tweet_id}/like: POST, DELETE
 - /api/media: POST 
-
-https://gitlab.skillbox.ru/andrei_abramov_3/python_advanced_diploma.git

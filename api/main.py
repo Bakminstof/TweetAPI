@@ -27,11 +27,12 @@ async def lifespan(application: FastAPI) -> AsyncIterator[None]:
 
     await db_session_manager.inspect()
 
-    sentry_sdk.init(
-        dsn=settings.SENTRY,
-        traces_sample_rate=0.8,
-        profiles_sample_rate=0.8,
-    )
+    if settings.SENTRY:
+        sentry_sdk.init(
+            dsn=settings.SENTRY,
+            traces_sample_rate=0.8,
+            profiles_sample_rate=0.8,
+        )
 
     yield
 
