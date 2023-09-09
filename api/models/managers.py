@@ -1,6 +1,6 @@
 from contextlib import asynccontextmanager
 from logging import getLogger
-from typing import AsyncGenerator, AsyncIterator, Dict, List, Sequence
+from typing import AsyncGenerator, AsyncIterator, Dict, List, Sequence, Any
 
 from sqlalchemy import MetaData, inspect, make_url, select
 from sqlalchemy.engine.url import URL
@@ -151,7 +151,11 @@ class DatabaseAsyncSessionManager:
 class TweetManager(CRUDMixin):
     table = Tweet
 
-    async def get_tweets(self, async_session: AsyncSession) -> Sequence[Tweet]:
+    async def get_tweets(
+        self,
+        async_session: AsyncSession,
+        order_by: Any | None = None,
+    ) -> Sequence[Tweet]:
         """
         Loaded fields:
         id, content, author(id, name), likes(user_id, name), attachments(id)
@@ -169,7 +173,8 @@ class TweetManager(CRUDMixin):
             .joinedload(TweetMedia.media_item)
             .load_only(Media.id),
         ]
-        stmt = select(self.table).options(*options)
+
+        stmt = select(self.table).options(*options).order_by(order_by or self.table.id)
         result = await async_session.scalars(stmt)
         result = result.unique().all()
         await async_session.commit()
@@ -180,6 +185,7 @@ class TweetManager(CRUDMixin):
         self,
         async_session: AsyncSession,
         tweet_id: int,
+        order_by: Any | None = None,
     ) -> Tweet | None:
         """
         Loaded fields: id, author_id, author(id)
@@ -192,7 +198,12 @@ class TweetManager(CRUDMixin):
             noload(Tweet.likers),
             noload(Tweet.attachments),
         ]
-        stmt = select(self.table).where(Tweet.id == tweet_id).options(*options)
+        stmt = (
+            select(self.table)
+            .where(Tweet.id == tweet_id)
+            .options(*options)
+            .order_by(order_by or self.table.id)
+        )
         result = await async_session.scalar(stmt)
         await async_session.commit()
         return result
@@ -205,9 +216,11 @@ class UserManager(CRUDMixin):
         self,
         async_session: AsyncSession,
         user_id: int,
+        order_by: Any | None = None,
     ) -> User | None:
         """
-        Loaded fields: id, name, following, followers
+        Loaded fields:
+        id, name, following, followers
         """
         options = [
             load_only(User.id, User.name, User.following, User.followers),
@@ -215,7 +228,12 @@ class UserManager(CRUDMixin):
             noload(User.token),
             noload(User.tweets_likes),
         ]
-        stmt = select(self.table).where(User.id == user_id).options(*options)
+        stmt = (
+            select(self.table)
+            .where(User.id == user_id)
+            .options(*options)
+            .order_by(order_by or self.table.id)
+        )
         result = await async_session.scalar(stmt)
         await async_session.commit()
         return result
@@ -224,9 +242,11 @@ class UserManager(CRUDMixin):
         self,
         api_key: str,
         async_session: AsyncSession,
+        order_by: Any | None = None,
     ) -> User | None:
         """
-        Loaded fields: id, name, following, followers, token(api_key)
+        Loaded fields:
+        id, name, following, followers, token(api_key)
         """
         options = [
             load_only(User.id, User.name, User.following, User.followers),
@@ -234,7 +254,12 @@ class UserManager(CRUDMixin):
             noload(User.tweets),
             noload(User.tweets_likes),
         ]
-        stmt = select(self.table).where(User.token.has(api_key=api_key)).options(*options)
+        stmt = (
+            select(self.table)
+            .where(User.token.has(api_key=api_key))
+            .options(*options)
+            .order_by(order_by or self.table.id)
+        )
         result = await async_session.scalar(stmt)
         await async_session.commit()
         return result
@@ -255,6 +280,7 @@ class MediaManager(CRUDMixin):
         self,
         async_session: AsyncSession,
         media_ids: List[int],
+        order_by: Any | None = None,
     ) -> Sequence[Media]:
         """
         Loaded fields: id, file
@@ -263,7 +289,12 @@ class MediaManager(CRUDMixin):
             load_only(Media.id, Media.file),
             noload(Media.tweet_item),
         ]
-        stmt = select(self.table).where(Media.id.in_(media_ids)).options(*options)
+        stmt = (
+            select(self.table)
+            .where(Media.id.in_(media_ids))
+            .options(*options)
+            .order_by(order_by or self.table.id)
+        )
         result = await async_session.scalars(stmt)
         await async_session.commit()
         return result.unique().all()
