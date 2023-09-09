@@ -1,7 +1,8 @@
 ## Микросервис бэкэнда Твитов.
 
-Для запуска необходимо ввести команду: `docker-compose up --build -d` 
-
+Для запуска необходимо изменить переменные окружения `prod.env.template` или `dev.env.template`
+на `prod.env` или `dev.env`. Аналогично для `pg.env.template`. В эти файлы уже добавлены тестовые данные. 
+Далее просто ввести команду `docker-compose up --build -d`.
 
 ### Endpoints:
 - /api/users/me: GET 
