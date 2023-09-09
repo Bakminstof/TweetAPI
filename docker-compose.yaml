@@ -1,0 +1,60 @@
+version: '3.4'
+
+services:
+  tweet_api:
+    container_name: tweet_api_container
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      ENV_FILE: "prod.env"
+#    restart: always
+    volumes:
+      - ./api/logging_data/logs:/api/logging_data/logs
+      - ./api/media:/api/media
+    ports:
+      - "1200:1200"
+    command:
+      - "uvicorn"
+      - "main:app"
+      - "--host"
+      - "0.0.0.0"
+      - "--port"
+      - "1200"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - network
+
+  postgres:
+    container_name: postgres_container
+    build:
+      context: ./postgres
+      dockerfile: Dockerfile
+#    restart: always
+    env_file:
+      - ./postgres/pg.env
+    ports:
+      - '2002:2002'
+    volumes:
+      - ./postgres/data:/var/lib/postgresql/data
+      - ./postgres/backup:/var/lib/postgresql/backup
+      - ./postgres/backup_scripts:/var/lib/postgresql/backup_scripts
+      - ./postgres/config/:/var/lib/PostgresConfig/
+    command:
+      - "postgres"
+      - "-c"
+      - "config_file=/var/lib/PostgresConfig/postgresql.conf"
+    networks:
+      - network
+    healthcheck:
+      test: [ "CMD", "pg_isready", "-d", "postges", "-p", "2000", "-h", "0.0.0.0" ]
+      interval: 3s
+      timeout: 10s
+      retries: 3
+      start_period: 6s
+
+networks:
+  network:
+    driver: bridge
