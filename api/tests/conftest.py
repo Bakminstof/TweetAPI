@@ -31,7 +31,7 @@ MIGRATION_TASK: Task | None = None
 
 # Utils
 async def __clear_table(table: Type[Any], async_session: AsyncSession) -> None:
-    mixin = CRUDMixin
+    mixin = CRUDMixin()
     mixin.table = table
     await mixin.delete(async_session)
 

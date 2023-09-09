@@ -8,9 +8,12 @@ class CRUDMixin:
     table: Table | None = None
     default_limit: int = 100
 
-    @classmethod
+    def __check_table(self) -> None:
+        if not self.table:
+            raise AttributeError(f"{self.__name__}.table is not set")
+
     async def add_all(
-        cls,
+        self,
         async_session: AsyncSession,
         items: List[Any],
     ) -> List[Any]:
@@ -18,9 +21,8 @@ class CRUDMixin:
         await async_session.commit()
         return items
 
-    @classmethod
     async def add(
-        cls,
+        self,
         async_session: AsyncSession,
         item: Any,
     ) -> Any:
@@ -28,16 +30,14 @@ class CRUDMixin:
         await async_session.commit()
         return item
 
-    @classmethod
     async def delete(
-        cls,
+        self,
         async_session: AsyncSession,
         where: List | Tuple | None = None,
     ) -> bool:
-        if not cls.table:
-            raise AttributeError(f"{cls.__name__}.table is not set")
+        self.__check_table()
 
-        stmt = delete(cls.table)
+        stmt = delete(self.table)
 
         if where:
             stmt = stmt.where(*where)
@@ -46,28 +46,24 @@ class CRUDMixin:
         await async_session.commit()
         return bool(result.rowcount)
 
-    @classmethod
     async def update(
-        cls,
+        self,
         async_session: AsyncSession,
         instances: List[dict],
     ) -> None:
-        if not cls.table:
-            raise AttributeError(f"{cls.__name__}.table is not set")
+        self.__check_table()
 
-        await async_session.execute(update(cls.table), instances)
+        await async_session.execute(update(self.table), instances)
         await async_session.commit()
 
-    @classmethod
     async def exists(
-        cls,
+        self,
         async_session: AsyncSession,
         where: List | Tuple,
     ) -> bool:
-        if not cls.table:
-            raise AttributeError(f"{cls.__name__}.table is not set")
+        self.__check_table()
 
-        stmt = select(select(cls.table).where(*where).exists())
+        stmt = select(select(self.table).where(*where).exists())
 
         result = await async_session.execute(stmt)
         await async_session.commit()

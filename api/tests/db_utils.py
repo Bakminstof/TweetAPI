@@ -184,7 +184,7 @@ class DBManager:
         users: List[User],
         async_session: AsyncSession,
     ) -> List[Token]:
-        test_mixin = CRUDMixin
+        test_mixin = CRUDMixin()
         test_mixin.table = Token
 
         options = [
