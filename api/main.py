@@ -1,6 +1,6 @@
 from contextlib import asynccontextmanager
 from logging.config import dictConfig
-from typing import AsyncIterator
+from typing import AsyncIterator, Tuple, Dict
 
 import sentry_sdk
 from fastapi import APIRouter, FastAPI
@@ -40,18 +40,24 @@ async def lifespan(application: FastAPI) -> AsyncIterator[None]:
     await db_session_manager.close()
 
 
+api_prefix: str = "/api"
 app = FastAPI(
     debug=settings.DEBUG,
     title=settings.API_NAME,
     version=settings.API_VERSION,
     lifespan=lifespan,
+    openapi_url=api_prefix + "/openapi.json",
+    docs_url=api_prefix + "/docs",
+    redoc_url=api_prefix + "/redoc",
+    swagger_ui_oauth2_redirect_url=api_prefix + "/docs/oauth2-redirect",
 )
 
+# Exceptions
 ExceptionRegistrator(app).register_all()
 
 # Routers
-MAIN_ROUTER = APIRouter(prefix="/api")
-ROUTERS = (
+MAIN_ROUTER: APIRouter = APIRouter(prefix=api_prefix)
+ROUTERS: Tuple[APIRouter, ...] = (
     users_router,
     tweets_router,
     media_router,
@@ -64,7 +70,7 @@ app.include_router(MAIN_ROUTER)
 
 
 # Middlewares
-MIDDLEWARES = {
+MIDDLEWARES: Dict = {
     ValidateUploadMediaMiddleware: {
         "upload_paths": [app.url_path_for("upload_media")],
         "max_size": settings.MAX_MEDIA_SIZE,
