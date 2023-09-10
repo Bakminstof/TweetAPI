@@ -63,7 +63,7 @@ class TestGetTweets:
             url=self.URL,
             client=client,
         )
-        assert result == "Query params missing `api-key`"
+        assert result == "Missing `api-key` header"
 
     async def test_bad_api_key(
         self,
@@ -150,7 +150,7 @@ class TestCreateTweet:
             url=self.URL,
             client=client,
         )
-        assert result == "Query params missing `api-key`"
+        assert result == "Missing `api-key` header"
 
     async def test_bad_api_key(
         self,
@@ -272,7 +272,7 @@ class TestDeleteTweet:
             url=self.URL.format(tweet_id=tweet_id),
             client=client,
         )
-        assert result == "Query params missing `api-key`"
+        assert result == "Missing `api-key` header"
 
     async def test_bad_api_key(
         self,
@@ -447,7 +447,7 @@ class TestLikeTweet:
             url=self.URL.format(tweet_id=tweet_id),
             client=client,
         )
-        assert result == "Query params missing `api-key`"
+        assert result == "Missing `api-key` header"
 
     async def test_bad_api_key(
         self,
@@ -659,7 +659,7 @@ class TestDislikeTweet:
             url=self.URL.format(tweet_id=tweet_id),
             client=client,
         )
-        assert result == "Query params missing `api-key`"
+        assert result == "Missing `api-key` header"
 
     async def test_bad_api_key(
         self,

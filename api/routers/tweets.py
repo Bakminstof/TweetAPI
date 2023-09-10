@@ -5,7 +5,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from starlette.requests import Request
 
 from controllers import LikeController, TweetController
-from controllers.authenticate import APIKeyQuery
+from controllers.authenticate import APIKeyHeader
 from models.managers import get_session
 from models.models import (
     BaseResultModel,
@@ -20,7 +20,7 @@ router: APIRouter = APIRouter(prefix="/tweets")
 
 @router.get(
     "",
-    dependencies=[Depends(APIKeyQuery())],
+    dependencies=[Depends(APIKeyHeader())],
     response_model=ResultMultipleTweetModel,
     status_code=status.HTTP_200_OK,
     responses=TweetResponsesModel().get_tweet_responses,
@@ -35,7 +35,7 @@ async def get_tweets(
 
 @router.post(
     "",
-    dependencies=[Depends(APIKeyQuery())],
+    dependencies=[Depends(APIKeyHeader())],
     response_model=ResultSingleTweetModel,
     status_code=status.HTTP_201_CREATED,
     responses=TweetResponsesModel().create_tweet_responses,
@@ -53,7 +53,7 @@ async def create_tweet(
 
 @router.delete(
     "/{tweet_id:int}",
-    dependencies=[Depends(APIKeyQuery())],
+    dependencies=[Depends(APIKeyHeader())],
     response_model=BaseResultModel,
     status_code=status.HTTP_200_OK,
     responses=TweetResponsesModel().delete_tweet_responses,
@@ -71,7 +71,7 @@ async def delete_tweet(
 
 @router.post(
     "/{tweet_id:int}/likes",
-    dependencies=[Depends(APIKeyQuery())],
+    dependencies=[Depends(APIKeyHeader())],
     response_model=BaseResultModel,
     status_code=status.HTTP_201_CREATED,
     responses=TweetResponsesModel().like_tweet_responses,
@@ -89,7 +89,7 @@ async def like_tweet(
 
 @router.delete(
     "/{tweet_id:int}/likes",
-    dependencies=[Depends(APIKeyQuery())],
+    dependencies=[Depends(APIKeyHeader())],
     response_model=BaseResultModel,
     status_code=status.HTTP_200_OK,
     responses=TweetResponsesModel().dislike_tweet_responses,

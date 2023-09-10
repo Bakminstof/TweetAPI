@@ -223,7 +223,7 @@ class TestUploadMedia:
             client=client,
             headers=headers,
         )
-        assert result == "Query params missing `api-key`"
+        assert result == "Missing `api-key` header"
 
     async def test_bad_api_key(
         self,

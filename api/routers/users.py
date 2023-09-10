@@ -5,7 +5,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from starlette.requests import Request
 
 from controllers import UserController
-from controllers.authenticate import APIKeyQuery
+from controllers.authenticate import APIKeyHeader
 from models.managers import get_session
 from models.models import BaseResultModel, ResultDetailUserModel, UserResponsesModel
 
@@ -14,7 +14,7 @@ router: APIRouter = APIRouter(prefix="/users")
 
 @router.get(
     "/me",
-    dependencies=[Depends(APIKeyQuery())],
+    dependencies=[Depends(APIKeyHeader())],
     response_model=ResultDetailUserModel,
     status_code=status.HTTP_200_OK,
     responses=UserResponsesModel().me_detail_responses,
@@ -43,7 +43,7 @@ async def user_detail(
 
 @router.post(
     "/{user_id:int}/follow",
-    dependencies=[Depends(APIKeyQuery())],
+    dependencies=[Depends(APIKeyHeader())],
     response_model=BaseResultModel,
     status_code=status.HTTP_201_CREATED,
     responses=UserResponsesModel().follow_user_responses,
@@ -61,7 +61,7 @@ async def follow_user(
 
 @router.delete(
     "/{user_id:int}/follow",
-    dependencies=[Depends(APIKeyQuery())],
+    dependencies=[Depends(APIKeyHeader())],
     response_model=BaseResultModel,
     status_code=status.HTTP_200_OK,
     responses=UserResponsesModel().unfollow_user_responses,

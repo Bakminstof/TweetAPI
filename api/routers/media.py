@@ -6,7 +6,7 @@ from starlette.datastructures import FormData
 from starlette.requests import Request
 
 from controllers import MediaController
-from controllers.authenticate import APIKeyQuery
+from controllers.authenticate import APIKeyHeader
 from models.managers import get_session
 from models.models import MediaResponsesModel, ResultMediaModel
 
@@ -16,7 +16,7 @@ router = APIRouter(prefix="/media")
 @router.post(
     "",
     name="upload_media",
-    dependencies=[Depends(APIKeyQuery())],
+    dependencies=[Depends(APIKeyHeader())],
     response_model=ResultMediaModel,
     status_code=status.HTTP_201_CREATED,
     description="Form-data is expected",

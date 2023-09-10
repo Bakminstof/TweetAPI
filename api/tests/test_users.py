@@ -51,7 +51,7 @@ class TestMeDetail:
             url=self.URL.format(user_id=user.id),
             client=client,
         )
-        assert result == "Query params missing `api-key`"
+        assert result == "Missing `api-key` header"
 
     async def test_bad_api_key(
         self,
@@ -299,7 +299,7 @@ class TestFollowUser:
             url=self.URL.format(user_id=user.id),
             client=client,
         )
-        assert result == "Query params missing `api-key`"
+        assert result == "Missing `api-key` header"
 
     async def test_bad_api_key(
         self,
@@ -526,7 +526,7 @@ class TestUnFollowUser:
             url=self.URL.format(user_id=user.id),
             client=client,
         )
-        assert result == "Query params missing `api-key`"
+        assert result == "Missing `api-key` header"
 
     async def test_bad_api_key(
         self,
