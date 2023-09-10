@@ -11,9 +11,9 @@ services:
 #    restart: always
     volumes:
       - ./api/logging_data/logs:/api/logging_data/logs
-      - ./api/media:/api/media
-    ports:
-      - "1200:1200"
+      - ./api/static:/api/static
+    expose:
+      - "1200"
     command:
       - "uvicorn"
       - "main:app"
@@ -49,11 +49,26 @@ services:
     networks:
       - network
     healthcheck:
-      test: [ "CMD", "pg_isready", "-d", "postges", "-p", "2000", "-h", "0.0.0.0" ]
+      test: [ "CMD", "pg_isready", "-d", "postges", "-p", "2002", "-h", "0.0.0.0" ]
       interval: 3s
       timeout: 10s
       retries: 3
       start_period: 6s
+
+  nginx:
+    container_name: nginx_container
+    build:
+      context: ./nginx
+      dockerfile: Dockerfile
+    volumes:
+      - ./api/static:/usr/nginx/static
+#    restart: always
+    ports:
+      - "1200:1200"
+    networks:
+      - network
+    depends_on:
+      - tweet_api
 
 networks:
   network:

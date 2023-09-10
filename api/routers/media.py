@@ -10,7 +10,7 @@ from controllers.authenticate import APIKeyHeader
 from models.managers import get_session
 from models.models import MediaResponsesModel, ResultMediaModel
 
-router = APIRouter(prefix="/media")
+router = APIRouter(prefix="/medias")
 
 
 @router.post(

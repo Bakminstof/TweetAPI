@@ -60,7 +60,7 @@ async def clear_media(session: AsyncSession, media_id: int, delay: int = 2) -> N
 
 
 class TestUploadMedia:
-    URL = "/api/media"
+    URL = "/api/medias"
     _METHOD = "POST"
 
     media_id: int | None = None

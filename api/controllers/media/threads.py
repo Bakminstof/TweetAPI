@@ -78,10 +78,9 @@ class WriteThread(BaseThread):
 
         media, file = item
         media_path = Path(media.file)
-        print(media_path)
+
         with media_path.open(mode="wb") as write_file:
             write_file.write(file)
-            print("writed")
 
         self.queue.task_done()
 
