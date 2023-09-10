@@ -5,6 +5,8 @@
 Далее просто ввести команду `docker-compose up --build -d`.
 
 ### Endpoints:
+- /api/docs: GET
+- /api/redoc: GET
 - /api/users/me: GET 
 - /api/users/{user_id}: GET 
 - /api/users/{user_id}/follow: POST, DELETE
