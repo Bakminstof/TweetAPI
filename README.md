@@ -14,3 +14,6 @@
 - /api/tweets/{tweet_id}: DELETE
 - /api/tweets/{tweet_id}/like: POST, DELETE
 - /api/media: POST 
+
+Для проверки взаимодействия с фронтэндом нужно добавить в базу данных пользователя с именем `test`
+и токен с api_key `test`. Далее открыть `localhost:1200`
