@@ -52,7 +52,7 @@ class ResultSingleTweetModel(BaseResultModel):
 class TweetItemModel(BaseModel):
     id: int
     content: str = ""
-    attachments: List[int] = Field(..., title="List of media ID's")
+    attachments: List[str] = Field(..., title="List of media")
     author: UserModel
     likes: List[LikerModel] = []
 

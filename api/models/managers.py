@@ -172,7 +172,7 @@ class TweetManager(CRUDMixin):
             joinedload(Tweet.likers).joinedload(Like.liker).noload(User.token),
             joinedload(Tweet.attachments)
             .joinedload(TweetMedia.media_item)
-            .load_only(Media.id),
+            .load_only(Media.id, Media.file),
         ]
 
         stmt = (

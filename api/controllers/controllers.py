@@ -99,10 +99,12 @@ class TweetController:
         tweets = []
 
         for tweet in tweets_db:
+            attachments = [att.media_item.file for att in tweet.attachments]
+
             twt = {
                 "id": tweet.id,
                 "content": tweet.content,
-                "attachments": [att.id for att in tweet.attachments],
+                "attachments": attachments,
                 "author": {
                     "id": tweet.author.id,
                     "name": tweet.author.name,
@@ -358,7 +360,8 @@ class MediaController:
         for media in media_items:
             media_item_dir = self.__create_media_item_dir(media.id)
             media_location = media_item_dir / media.name
-            media.file = str(media_location.absolute().resolve())
+            media.file = media_location.as_posix()
+
             to_update.append(media.to_dict())
 
         await self.media_manager.update(async_session, to_update)

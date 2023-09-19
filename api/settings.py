@@ -47,15 +47,6 @@ class Settings(BaseSettings):
     CSS_DIR: Path = "css"
     MEDIA_DIR: Path = "images"
 
-    @field_validator("STATIC_DIR", mode="before")
-    def static_dir(
-        cls,
-        value: str,
-        values: FieldValidationInfo,
-        **kwargs,
-    ) -> Path:
-        return values.data.get("ROOT_PATH") / value
-
     @field_validator("JS_DIR", "CSS_DIR", "MEDIA_DIR", mode="before")
     def static_sub_dirs(
         cls,

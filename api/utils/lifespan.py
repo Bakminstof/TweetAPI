@@ -35,7 +35,7 @@ async def lifespan(application: FastAPI) -> AsyncIterator[None]:
 
     MediaController.start_threads()
 
-    # await db_session_manager.inspect()
+    await db_session_manager.inspect()
 
     if settings.DEBUG:
         application.mount(
