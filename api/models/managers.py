@@ -1,6 +1,6 @@
 from contextlib import asynccontextmanager
 from logging import getLogger
-from typing import AsyncGenerator, AsyncIterator, Dict, List, Sequence, Any
+from typing import Any, AsyncGenerator, AsyncIterator, Dict, List, Sequence
 
 from sqlalchemy import MetaData, inspect, make_url, select
 from sqlalchemy.engine.url import URL

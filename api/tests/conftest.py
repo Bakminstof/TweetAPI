@@ -5,12 +5,12 @@ from urllib.parse import quote_plus
 from uuid import uuid4
 
 import pytest
+from alembic.command import upgrade
 from fastapi import FastAPI
 from httpx import AsyncClient
 from sqlalchemy import URL
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from alembic.command import upgrade
 from controllers import MediaController
 from main import app as app_for_tests
 from models.managers import (

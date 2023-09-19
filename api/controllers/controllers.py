@@ -10,12 +10,12 @@ from fastapi import UploadFile, status
 from sqlalchemy.ext.asyncio import AsyncSession
 from starlette.datastructures import FormData
 
-from controllers.media.threads import ReadThread, WriteThread
 from exceptions import APIException, AuthenticationError, NotFoundError, ValidationError
 from models.managers import LikeManager, MediaManager, TweetManager, UserManager
 from models.models import CrateTweetModel
 from models.schemas import Like, Media, Tweet, TweetMedia, User
 from settings import settings
+from utils.threads import ReadThread, WriteThread
 
 logger = getLogger(__name__)
 

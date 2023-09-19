@@ -19,10 +19,12 @@ class Settings(BaseSettings):
     model_config = SettingsConfigDict(env_file=ENV_FILE)
 
     # Base
-    ROOT_PATH: Path = BASE_DIR
-
     API_NAME: str
     API_VERSION: str
+
+    DEBUG: bool = False
+
+    ROOT_PATH: Path = BASE_DIR
 
     META: dict | None = None
 
@@ -32,15 +34,37 @@ class Settings(BaseSettings):
             "version": values.data.get("API_VERSION"),
         }
 
-    MEDIA_DIR: Path = "media"
+    # Docs
+    OPENAPI_URL: str = "/openapi.json"
+    SWAGGER_UI_OAUTH2_REDIRECT_URL: str = "/docs/oauth2-redirect"
 
-    @field_validator("MEDIA_DIR", mode="before")
-    def media_dir(cls, value: str, values: FieldValidationInfo, **kwargs) -> Path:  # noqa
+    # Static
+    STATIC_URL: str = "/static"
+
+    STATIC_DIR: Path = "static"
+
+    JS_DIR: Path = "js"
+    CSS_DIR: Path = "css"
+    MEDIA_DIR: Path = "images"
+
+    @field_validator("STATIC_DIR", mode="before")
+    def static_dir(
+        cls,
+        value: str,
+        values: FieldValidationInfo,
+        **kwargs,
+    ) -> Path:
         return values.data.get("ROOT_PATH") / value
 
-    DEBUG: bool = False
+    @field_validator("JS_DIR", "CSS_DIR", "MEDIA_DIR", mode="before")
+    def static_sub_dirs(
+        cls,
+        value: str,
+        values: FieldValidationInfo,
+        **kwargs,
+    ) -> Path:
+        return values.data.get("STATIC_DIR") / value
 
-    # Media
     MAX_MEDIA_SIZE: int | float = 6 * 1024 * 1024  # Bytes. Default 6 MB
 
     # Database
@@ -63,7 +87,7 @@ class Settings(BaseSettings):
     @field_validator("DB_URL")
     def db_url(
         cls,
-        value: URL | None,
+        value: None,
         values: FieldValidationInfo,
         **kwargs,
     ) -> URL:

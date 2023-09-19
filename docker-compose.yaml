@@ -8,7 +8,7 @@ services:
       dockerfile: Dockerfile
     environment:
       ENV_FILE: "prod.env"
-#    restart: always
+    restart: always
     volumes:
       - ./api/logging_data/logs:/api/logging_data/logs
       - ./api/static:/api/static
@@ -32,13 +32,14 @@ services:
     build:
       context: ./postgres
       dockerfile: Dockerfile
-#    restart: always
+    restart: always
     env_file:
       - ./postgres/pg.env
     ports:
       - '2002:2002'
     volumes:
       - ./postgres/data:/var/lib/postgresql/data
+      - ./postgres/logs:/var/lib/postgresql/logs
       - ./postgres/backup:/var/lib/postgresql/backup
       - ./postgres/backup_scripts:/var/lib/postgresql/backup_scripts
       - ./postgres/config/:/var/lib/PostgresConfig/
@@ -60,9 +61,11 @@ services:
     build:
       context: ./nginx
       dockerfile: Dockerfile
+    working_dir: /usr/nginx/static
     volumes:
       - ./api/static:/usr/nginx/static
-#    restart: always
+      - ./nginx/logs/:/var/log/nginx/
+    restart: always
     ports:
       - "1200:1200"
     networks:

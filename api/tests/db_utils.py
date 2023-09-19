@@ -4,12 +4,12 @@ from pathlib import Path
 from typing import AsyncIterator, Dict, List, Sequence, Tuple
 from uuid import uuid4
 
+from alembic.config import Config as AlembicConfig
 from sqlalchemy import URL, TextClause, select, text
 from sqlalchemy.engine.url import make_url
 from sqlalchemy.ext.asyncio import AsyncEngine, AsyncSession, create_async_engine
 from sqlalchemy.orm import joinedload, load_only, noload
 
-from alembic.config import Config as AlembicConfig
 from models.managers import UserManager
 from models.mixins import CRUDMixin
 from models.schemas import Token, User
